@@ -1,3 +1,4 @@
+'use strict'
 const BASE_URL = "https://bakcend-fecaf-render.onrender.com/contatos"
 
 export async function getContatos() {
