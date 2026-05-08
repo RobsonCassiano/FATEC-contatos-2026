@@ -3,10 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
     <script src="./app.js" defer type="module"></script>
     <title>Contatos</title>
 </head>
 <body>
-    
+    <main class="app">
+        <section class="hero">
+            <p class="eyebrow">CRUD de contatos</p>
+            <h1>Gerencie sua agenda com JavaScript puro</h1>
+            <p class="hero-text">
+                Cadastre, edite e remova contatos consumindo a API da atividade em uma interface simples e funcional.
+            </p>
+        </section>
+
+        <section class="content">
+            <div class="panel">
+                <div class="panel-header">
+                    <h2 id="form-title">Novo contato</h2>
+                    <button class="ghost-button hidden" id="cancel-edit" type="button">Cancelar edicao</button>
+                </div>
+
+                <form id="contact-form" class="contact-form">
+                    <input id="contact-id" type="hidden">
+
+                    <label>
+                        Nome
+                        <input id="nome" name="nome" type="text" placeholder="Digite o nome completo" required>
+                    </label>
+
+                    <label>
+                        Celular
+                        <input id="celular" name="celular" type="text" placeholder="(11) 99999-9999" required>
+                    </label>
+
+                    <label>
+                        Foto
+                        <input id="foto" name="foto" type="url" placeholder="https://site.com/foto.jpg" required>
+                    </label>
+
+                    <label>
+                        E-mail
+                        <input id="email" name="email" type="email" placeholder="email@exemplo.com" required>
+                    </label>
+
+                    <label>
+                        Endereco
+                        <input id="endereco" name="endereco" type="text" placeholder="Rua, numero e complemento" required>
+                    </label>
+
+                    <label>
+                        Cidade
+                        <input id="cidade" name="cidade" type="text" placeholder="Cidade" required>
+                    </label>
+
+                    <div class="form-actions">
+                        <button id="submit-button" class="primary-button" type="submit">Salvar contato</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Lista de contatos</h2>
+                    <button class="ghost-button" id="refresh-list" type="button">Atualizar lista</button>
+                </div>
+
+                <p id="status" class="status" aria-live="polite"></p>
+                <div id="contact-list" class="contact-list"></div>
+            </div>
+        </section>
+    </main>
 </body>
 </html>
