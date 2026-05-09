@@ -39,8 +39,21 @@
 
                     <label>
                         Foto
-                        <input id="foto" name="foto" type="url" placeholder="https://site.com/foto.jpg" required>
+                        <div class="upload-wrapper">
+                            <img src="./img/upload-icon.svg" alt="Ícone de upload" class="upload-icon">
+                            <input id="preview-input" name="foto" type="file" accept="image/*" required>
+                        </div>
+                        <img id="preview-image" src="" alt="Preview da foto" class="preview-img" style="display: none; margin-top: 10px; max-width: 200px; max-height: 200px;">
                     </label>
+
+                    <div class="image-search">
+                        <p class="search-label">ou busque uma imagem</p>
+                        <div class="search-input-group">
+                            <input id="image-search-input" type="text" placeholder="Digite uma palavra-chave..." class="search-input">
+                            <button id="search-images-btn" type="button" class="search-button">Buscar</button>
+                        </div>
+                        <div id="search-results" class="search-results" style="display: none;"></div>
+                    </div>
 
                     <label>
                         E-mail
