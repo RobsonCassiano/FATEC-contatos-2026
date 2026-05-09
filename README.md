@@ -84,8 +84,8 @@ Observacao:
 
 ## Checklist do Aluno
 - [x] Fiz o fork do repositorio.
-- [ ] Fiz commits a cada funcionalidade (ou pelo menos um para cada aula).
-- [ ] Meu projeto abre sem erros no navegador.
+- [x] Fiz commits a cada funcionalidade (ou pelo menos um para cada aula).
+- [x] Meu projeto abre sem erros no navegador.
 - [ ] Consigo listar contatos da API.
 - [ ] Consigo cadastrar novo contato.
 - [ ] Consigo atualizar contato da API.
