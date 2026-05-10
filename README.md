@@ -86,14 +86,14 @@ Observacao:
 - [x] Fiz o fork do repositorio.
 - [x] Fiz commits a cada funcionalidade (ou pelo menos um para cada aula).
 - [x] Meu projeto abre sem erros no navegador.
-- [ ] Consigo listar contatos da API.
-- [ ] Consigo cadastrar novo contato.
-- [ ] Consigo atualizar contato da API.
-- [ ] Consigo deletar contato da API.
-- [ ] Minha interface possui formulario e listagem.
-- [ ] Meu codigo esta organizado e legivel.
-- [ ] Nao exclui os arquivos base do repositorio.
-- [ ] Entreguei o link do repositorio.
+- [x] Consigo listar contatos da API.
+- [x] Consigo cadastrar novo contato.
+- [x] Consigo atualizar contato da API.
+- [x] Consigo deletar contato da API.
+- [x] Minha interface possui formulario e listagem.
+- [x] Meu codigo esta organizado e legivel.
+- [x] Nao exclui os arquivos base do repositorio.
+- [x] Entreguei o link do repositorio.
 
 ---
 

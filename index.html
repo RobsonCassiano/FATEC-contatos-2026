@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,11 +8,15 @@
     <script src="./app.js" defer type="module"></script>
     <title>Contatos</title>
 </head>
+
 <body>
     <main class="app">
         <section class="hero">
             <p class="eyebrow">CRUD de contatos</p>
-            <h1>Gerencie sua agenda com JavaScript puro</h1>
+            <div class="hero-header">
+                <img src="./img/logo_agenda.svg" alt="Logo Agenda" class="hero-logo">
+                <h1>Gerencie sua agenda com JavaScript puro</h1>
+            </div>
             <p class="hero-text">
                 Cadastre, edite e remova contatos consumindo a API da atividade em uma interface simples e funcional.
             </p>
@@ -41,15 +46,17 @@
                         Foto
                         <div class="upload-wrapper">
                             <img src="./img/upload-icon.svg" alt="Ícone de upload" class="upload-icon">
-                            <input id="preview-input" name="foto" type="file" accept="image/*" required>
+                            <input id="preview-input" name="foto" type="file" accept="image/*">
                         </div>
-                        <img id="preview-image" src="" alt="Preview da foto" class="preview-img" style="display: none; margin-top: 10px; max-width: 200px; max-height: 200px;">
+                        <img id="preview-image" src="" alt="Preview da foto" class="preview-img"
+                            style="display: none; margin-top: 10px; max-width: 200px; max-height: 200px;">
                     </label>
 
                     <div class="image-search">
-                        <p class="search-label">ou busque uma imagem</p>
+                        <p class="search-label">ou busque um Avatar</p>
                         <div class="search-input-group">
-                            <input id="image-search-input" type="text" placeholder="Digite uma palavra-chave..." class="search-input">
+                            <input id="image-search-input" type="text" placeholder="Digite uma palavra-chave..."
+                                class="search-input">
                             <button id="search-images-btn" type="button" class="search-button">Buscar</button>
                         </div>
                         <div id="search-results" class="search-results" style="display: none;"></div>
@@ -62,7 +69,8 @@
 
                     <label>
                         Endereco
-                        <input id="endereco" name="endereco" type="text" placeholder="Rua, numero e complemento" required>
+                        <input id="endereco" name="endereco" type="text" placeholder="Rua, numero e complemento"
+                            required>
                     </label>
 
                     <label>
@@ -82,10 +90,19 @@
                     <button class="ghost-button" id="refresh-list" type="button">Atualizar lista</button>
                 </div>
 
+                <!-- Novo campo de busca na lista -->
+                <div class="list-search" style="margin-bottom: 16px;">
+                    <input id="contact-list-search" type="text" placeholder="Filtrar contatos por nome..." class="search-input">
+                </div>
+
                 <p id="status" class="status" aria-live="polite"></p>
                 <div id="contact-list" class="contact-list"></div>
             </div>
         </section>
+        <footer>
+            <p>&copy; Robson Cassiano - Programação de Sítios Internet - 2026</p>
+        </footer>
     </main>
 </body>
+
 </html>

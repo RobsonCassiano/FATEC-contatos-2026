@@ -28,9 +28,11 @@ const fotoInput = document.getElementById("preview-input")
 const imageSearchInput = document.getElementById("image-search-input")
 const searchImagesBtn = document.getElementById("search-images-btn")
 const searchResults = document.getElementById("search-results")
+const contactListSearch = document.getElementById("contact-list-search")
 
 let contatos = []
 let selectedImageUrl = null
+let originalFoto = null
 
 function setStatus(message, type = "") {
   statusMessage.textContent = message
@@ -48,63 +50,82 @@ async function fileToBase64(file) {
 
 async function searchImages(query) {
   try {
-    setStatus("Buscando imagens...", "")
-    
-    const response = await fetch(
-      `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=12`,
-      {
-        headers: {
-          "Authorization": "UKgVGgLe9WK8X7H6K5tVMMKjNQ7TQpfB5p3xfPvg0VL9sRfN7S2T8K"
-        }
-      }
-    )
-    
-    if (!response.ok) {
-      throw new Error(`Erro ${response.status}: Falha ao buscar imagens`)
-    }
-    
-    const data = await response.json()
-    
-    if (!data.photos || data.photos.length === 0) {
-      searchResults.innerHTML = '<p style="grid-column: 1/-1; color: var(--muted); text-align: center;">Nenhuma imagem encontrada</p>'
-      searchResults.style.display = "grid"
-      setStatus("Nenhuma imagem encontrada para essa busca.", "")
-      return
-    }
-    
-    displayImageResults(data.photos)
-    setStatus(`${data.photos.length} imagem(ns) encontrada(s).`, "success")
+    setStatus("Buscando avatares...", "")
+
+    searchResults.textContent = ""
+
+    // lista 12 avatares com base no termo digitado
+    const avatars = Array.from({ length: 12 }, (_, index) => ({
+      url: `https://api.dicebear.com/9.x/adventurer/svg?seed=${query}-${index}`
+    }))
+
+    displayImageResults(avatars)
+
+    setStatus(`${avatars.length} avatar(es) encontrado(s).`, "success")
+
   } catch (error) {
-    console.error("Erro na busca:", error)
-    setStatus(error.message || "Erro ao buscar imagens. Tente novamente.", "error")
-    searchResults.innerHTML = '<p style="grid-column: 1/-1; color: var(--danger); text-align: center;">Erro ao carregar imagens</p>'
+    console.error(error)
+
+    setStatus(
+      "Erro ao gerar avatares.",
+      "error"
+    )
+
+    const errorElement = document.createElement("p")
+    errorElement.textContent = "Erro ao carregar avatares"
+    errorElement.style.gridColumn = "1 / -1"
+    errorElement.style.color = "var(--danger)"
+    errorElement.style.textAlign = "center"
+
+    searchResults.appendChild(errorElement)
     searchResults.style.display = "grid"
   }
 }
 
 function displayImageResults(images) {
-  searchResults.innerHTML = ""
-  
+  searchResults.textContent = ""
+
   if (images.length === 0) {
-    searchResults.innerHTML = '<p style="grid-column: 1/-1; color: var(--muted); text-align: center;">Nenhuma imagem encontrada</p>'
+
+    const message = document.createElement("p")
+
+    message.textContent = "Nenhuma imagem encontrada"
+
+    message.style.gridColumn = "1 / -1"
+    message.style.color = "var(--gray)"
+    message.style.textAlign = "center"
+
+    searchResults.appendChild(message)
+
     searchResults.style.display = "grid"
+
     return
   }
-  
+
   images.forEach((image) => {
     const thumb = document.createElement("div")
     thumb.className = "image-thumb"
-    thumb.innerHTML = `<img src="${image.src.small}" alt="Foto por ${image.photographer || 'Pexels'}">`
-    
+
+    const img = document.createElement("img")
+    const urlPreview = image.url || (image.src ? image.src.small : "")
+    const urlFull = image.url || (image.src ? image.src.medium : "")
+
+    img.src = urlPreview
+    img.alt = image.url ? "Avatar" : "Imagem"
+
+    thumb.appendChild(img)
+
     thumb.addEventListener("click", () => {
-      selectImage(image.src.medium, thumb)
+      selectImage(urlFull, thumb)
     })
-    
+
     searchResults.appendChild(thumb)
   })
-  
+
   searchResults.style.display = "grid"
-}
+
+    return
+  }
 
 function selectImage(imageUrl, thumbElement) {
   selectedImageUrl = imageUrl
@@ -121,6 +142,9 @@ function selectImage(imageUrl, thumbElement) {
   const previewImg = document.getElementById("preview-image")
   previewImg.src = imageUrl
   previewImg.style.display = "block"
+
+  // Esconder a lista de sugestões após a seleção
+  searchResults.style.display = "none"
 }
 
 async function getFormData() {
@@ -128,6 +152,11 @@ async function getFormData() {
   
   if (!foto && fotoInput.files && fotoInput.files[0]) {
     foto = await fileToBase64(fotoInput.files[0])
+  }
+  
+  // Se estiver editando e não houver nova foto, manter a foto anterior
+  if (!foto && originalFoto) {
+    foto = originalFoto
   }
   
   return {
@@ -148,8 +177,9 @@ function resetForm() {
   cancelEditButton.classList.add("hidden")
   
   selectedImageUrl = null
+  originalFoto = null
   imageSearchInput.value = ""
-  searchResults.innerHTML = ""
+  searchResults.textContent = ""
   searchResults.style.display = "none"
   
   const previewImg = document.getElementById("preview-image")
@@ -161,6 +191,7 @@ function resetForm() {
 
 function fillForm(contato) {
   contactIdInput.value = contato.id
+  originalFoto = contato.foto || null
   fieldIds.forEach((field) => {
     fields[field].value = contato[field] ?? ""
   })
@@ -184,14 +215,18 @@ function createContactCard(contato) {
   article.innerHTML = `
     <img src="${contato.foto}" alt="Foto de ${contato.nome}">
     <div class="contact-info">
-      <h3>${contato.nome}</h3>
-      <p><strong>Celular:</strong> ${contato.celular}</p>
-      <p><strong>E-mail:</strong> ${contato.email}</p>
-      <p><strong>Endereco:</strong> ${contato.endereco}</p>
-      <p><strong>Cidade:</strong> ${contato.cidade}</p>
-      <div class="card-actions">
-        <button class="edit" type="button">Editar</button>
-        <button class="delete" type="button">Excluir</button>
+      <div class="card-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <h3 style="margin: 0;">${contato.nome}</h3>
+          <div class="card-actions" style="display: flex; gap: 16px; margin-top: 0;">
+            <button class="edit" type="button">Editar</button>
+            <button class="delete" type="button">Excluir</button>
+          </div>
+      </div>
+      <div class="contact-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px;">
+        <p><strong>Telefone:</strong> ${contato.celular}</p>
+        <p><strong>E-mail:</strong> ${contato.email}</p>
+        <p><strong>Cidade:</strong> ${contato.cidade}</p>
+        <p><strong>Endereço:</strong> ${contato.endereco}</p>
       </div>
     </div>
   `
@@ -223,16 +258,23 @@ function createContactCard(contato) {
 
 function renderContacts() {
   contactList.replaceChildren()
+  
+  const searchTerm = contactListSearch.value.toLowerCase()
+  const filteredContatos = contatos.filter(contato => 
+    contato.nome.toLowerCase().includes(searchTerm)
+  )
 
-  if (contatos.length === 0) {
+  if (filteredContatos.length === 0) {
     const emptyState = document.createElement("div")
     emptyState.className = "empty-state"
-    emptyState.textContent = "Nenhum contato encontrado. Cadastre o primeiro contato no formulario ao lado."
+    emptyState.textContent = contatos.length === 0 
+      ? "Nenhum contato encontrado. Cadastre o primeiro contato no formulario ao lado."
+      : "Nenhum contato corresponde à sua busca."
     contactList.append(emptyState)
     return
   }
 
-  const cards = contatos.map(createContactCard)
+  const cards = filteredContatos.map(createContactCard)
   contactList.append(...cards)
 }
 
@@ -240,6 +282,8 @@ async function loadContacts() {
   try {
     setStatus("Carregando contatos...", "")
     contatos = await getContatos()
+    // Ordenação Alfabética
+    contatos.sort((a, b) => a.nome.localeCompare(b.nome))
     renderContacts()
     setStatus(`${contatos.length} contato(s) carregado(s).`, "success")
   } catch (error) {
@@ -296,6 +340,17 @@ imageSearchInput.addEventListener("keypress", (event) => {
     }
   }
 })
+
+// Limpa as sugestões de avatares se o usuário apagar o texto da busca
+imageSearchInput.addEventListener("input", () => {
+  if (imageSearchInput.value.trim() === "") {
+    searchResults.innerHTML = ""
+    searchResults.style.display = "none"
+  }
+})
+
+// Ouvinte para filtrar a lista em tempo real
+contactListSearch.addEventListener("input", renderContacts)
 
 resetForm()
 loadContacts()
