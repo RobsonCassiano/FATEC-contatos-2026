@@ -328,7 +328,12 @@ refreshListButton.addEventListener("click", () => {
 searchImagesBtn.addEventListener("click", () => {
   const query = imageSearchInput.value.trim()
   if (query) {
+    imageSearchInput.classList.remove("input-error")
     searchImages(query)
+  } else {
+    setStatus("Por favor, digite uma palavra-chave para buscar um avatar.", "error")
+    imageSearchInput.classList.add("input-error")
+    imageSearchInput.focus()
   }
 })
 
@@ -336,13 +341,19 @@ imageSearchInput.addEventListener("keypress", (event) => {
   if (event.key === "Enter") {
     const query = imageSearchInput.value.trim()
     if (query) {
+      imageSearchInput.classList.remove("input-error")
       searchImages(query)
+    } else {
+      setStatus("Por favor, digite uma palavra-chave para buscar um avatar.", "error")
+      imageSearchInput.classList.add("input-error")
+      imageSearchInput.focus()
     }
   }
 })
 
 // Limpa as sugestões de avatares se o usuário apagar o texto da busca
 imageSearchInput.addEventListener("input", () => {
+  imageSearchInput.classList.remove("input-error")
   if (imageSearchInput.value.trim() === "") {
     searchResults.innerHTML = ""
     searchResults.style.display = "none"
@@ -351,6 +362,29 @@ imageSearchInput.addEventListener("input", () => {
 
 // Ouvinte para filtrar a lista em tempo real
 contactListSearch.addEventListener("input", renderContacts)
+
+// Drag and Drop para o campo de foto
+const uploadWrapper = document.querySelector(".upload-wrapper")
+
+uploadWrapper.addEventListener("dragover", (event) => {
+  event.preventDefault()
+  uploadWrapper.classList.add("dragging")
+})
+
+uploadWrapper.addEventListener("dragleave", () => {
+  uploadWrapper.classList.remove("dragging")
+})
+
+uploadWrapper.addEventListener("drop", (event) => {
+  event.preventDefault()
+  uploadWrapper.classList.remove("dragging")
+
+  const files = event.dataTransfer.files
+  if (files && files[0] && files[0].type.startsWith("image/")) {
+    fotoInput.files = files
+    fotoInput.dispatchEvent(new Event("change", { bubbles: true }))
+  }
+})
 
 resetForm()
 loadContacts()

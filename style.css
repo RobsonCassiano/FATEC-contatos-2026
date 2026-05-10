@@ -30,7 +30,10 @@ body {
 button,
 input {
     font: inherit;
-    /* Restaura o cursor para os campos de entrada */
+}
+
+input {
+    /* Restaura o cursor apenas para os campos de entrada de texto */
     caret-color: auto;
     user-select: text;
 }
@@ -126,6 +129,20 @@ input {
 .contact-form input:focus {
     outline: 2px solid rgba(37, 99, 235, 0.2);
     border-color: var(--primary);
+}
+
+/* Classe de alerta para erros em inputs */
+.input-error {
+    border-color: var(--danger) !important;
+    outline: 2px solid rgba(220, 38, 38, 0.2) !important;
+    animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
 }
 
 .form-actions {
@@ -244,9 +261,12 @@ input {
 .upload-wrapper {
     position: relative;
     display: flex;
+    flex-direction: column-reverse;
     align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    padding: 24px 16px;
     border: 2px dashed #d1d5db;
     border-radius: 14px;
     background: rgba(37, 99, 235, 0.05);
@@ -259,9 +279,15 @@ input {
     background: rgba(37, 99, 235, 0.1);
 }
 
+.upload-wrapper.dragging {
+    border-color: var(--primary);
+    background: rgba(37, 99, 235, 0.2);
+    border-style: solid;
+}
+
 .upload-icon {
-    width: 24px;
-    height: 24px;
+    width: 60px;
+    height: 40px;
     opacity: 0.7;
     flex-shrink: 0;
 }
@@ -276,7 +302,7 @@ input {
 }
 
 .upload-wrapper::after {
-    content: "Clique para selecionar uma imagem";
+    content: "Arraste uma imagem ou clique para selecionar";
     color: var(--gray);
     font-weight: 500;
     font-size: 0.95rem;
