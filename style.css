@@ -131,6 +131,18 @@ input {
     border-color: var(--primary);
 }
 
+.required-info {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 16px;
+    font-style: italic;
+}
+
+.required-mark {
+    color: var(--danger);
+    margin-left: 2px;
+}
+
 /* Classe de alerta para erros em inputs */
 .input-error {
     border-color: var(--danger) !important;

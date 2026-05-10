@@ -28,17 +28,18 @@
                     <h2 id="form-title">Novo contato</h2>
                     <button class="ghost-button hidden" id="cancel-edit" type="button">Cancelar edicao</button>
                 </div>
+                <p class="required-info">Campos com asteriscos (*) são obrigatórios!</p>
 
                 <form id="contact-form" class="contact-form">
                     <input id="contact-id" type="hidden">
 
                     <label>
-                        Nome
+                        Nome <span class="required-mark">*</span>
                         <input id="nome" name="nome" type="text" placeholder="Digite o nome completo" required>
                     </label>
 
                     <label>
-                        Celular
+                        Celular <span class="required-mark">*</span>
                         <input id="celular" name="celular" type="text" placeholder="(11) 99999-9999" required>
                     </label>
 
@@ -53,7 +54,7 @@
                     </label>
 
                     <div class="image-search">
-                        <p class="search-label">ou busque um Avatar</p>
+                        <p class="search-label">Sem foto? Busque um Avatar</p>
                         <div class="search-input-group">
                             <input id="image-search-input" type="text" placeholder="Digite uma palavra-chave..."
                                 class="search-input">
@@ -63,18 +64,18 @@
                     </div>
 
                     <label>
-                        E-mail
+                        E-mail <span class="required-mark">*</span>
                         <input id="email" name="email" type="email" placeholder="email@exemplo.com" required>
                     </label>
 
                     <label>
-                        Endereco
+                        Endereco <span class="required-mark">*</span>
                         <input id="endereco" name="endereco" type="text" placeholder="Rua, numero e complemento"
                             required>
                     </label>
 
                     <label>
-                        Cidade
+                        Cidade <span class="required-mark">*</span>
                         <input id="cidade" name="cidade" type="text" placeholder="Cidade" required>
                     </label>
 
