@@ -6,6 +6,10 @@ import {
   getContatos
 } from "./contatos.js"
 
+import {
+  uploadParaCloudinary
+} from "./cloudinary.js"
+
 import{
  preview 
 } from "./preview.js"
@@ -151,7 +155,13 @@ async function getFormData() {
   let foto = selectedImageUrl || ""
   
   if (!foto && fotoInput.files && fotoInput.files[0]) {
-    foto = await fileToBase64(fotoInput.files[0])
+    try {
+      const cloudinaryResponse = await uploadParaCloudinary(fotoInput.files[0])
+      foto = cloudinaryResponse.secure_url
+    } catch (error) {
+      console.error("Erro no upload:", error)
+      throw new Error("Falha ao enviar imagem para o Cloudinary")
+    }
   }
   
   // Se estiver editando e não houver nova foto, manter a foto anterior
