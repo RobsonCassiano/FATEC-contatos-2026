@@ -264,6 +264,17 @@ input {
     color: var(--danger);
 }
 
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.card-header h3 {
+    margin: 0;
+}
+
 .empty-state {
     text-align: center;
     color: var(--gray);
@@ -402,6 +413,59 @@ input {
 .image-thumb.selected {
     border-color: var(--primary);
     box-shadow: 0 0 12px rgba(37, 99, 235, 0.3);
+}
+
+.contact-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 20px;
+}
+
+.feedback-message {
+    grid-column: 1 / -1;
+    text-align: center;
+}
+
+.feedback-message.error {
+    color: var(--danger);
+}
+
+.feedback-message.info {
+    color: var(--gray);
+}
+
+/* Tela de Login */
+#login-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--background);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.login-panel {
+    width: 100%;
+    max-width: 400px;
+    padding: 40px;
+}
+
+.login-header {
+    justify-content: center;
+    margin-bottom: 32px;
+}
+
+.login-title {
+    font-size: 1.4rem;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.login-footer-text {
+    margin-top: 16px;
+    font-size: 0.9rem;
+    text-align: center;
 }
 
 footer {

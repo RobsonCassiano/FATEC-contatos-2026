@@ -23,6 +23,7 @@ const submitButton = document.getElementById("submit-button")
 const cancelEditButton = document.getElementById("cancel-edit")
 const refreshListButton = document.getElementById("refresh-list")
 const contactIdInput = document.getElementById("contact-id")
+const logoutButton = document.getElementById("logout-button")
 
 const fieldIds = ["nome", "celular", "email", "endereco", "cidade"]
 const fields = Object.fromEntries(
@@ -76,10 +77,8 @@ async function searchImages(query) {
     )
 
     const errorElement = document.createElement("p")
+    errorElement.className = "feedback-message error"
     errorElement.textContent = "Erro ao carregar avatares"
-    errorElement.style.gridColumn = "1 / -1"
-    errorElement.style.color = "var(--danger)"
-    errorElement.style.textAlign = "center"
 
     searchResults.appendChild(errorElement)
     searchResults.style.display = "grid"
@@ -90,14 +89,9 @@ function displayImageResults(images) {
   searchResults.textContent = ""
 
   if (images.length === 0) {
-
     const message = document.createElement("p")
-
+    message.className = "feedback-message info"
     message.textContent = "Nenhuma imagem encontrada"
-
-    message.style.gridColumn = "1 / -1"
-    message.style.color = "var(--gray)"
-    message.style.textAlign = "center"
 
     searchResults.appendChild(message)
 
@@ -222,28 +216,82 @@ function createContactCard(contato) {
   const article = document.createElement("article")
   article.className = "contact-card"
 
-  article.innerHTML = `
-    <img src="${contato.foto}" alt="Foto de ${contato.nome}">
-    <div class="contact-info">
-      <div class="card-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-          <h3 style="margin: 0;">${contato.nome}</h3>
-          <div class="card-actions" style="display: flex; gap: 16px; margin-top: 0;">
-            <button class="edit" type="button">Editar</button>
-            <button class="delete" type="button">Excluir</button>
-          </div>
-      </div>
-      <div class="contact-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px;">
-        <p><strong>Telefone:</strong> ${contato.celular}</p>
-        <p><strong>E-mail:</strong> ${contato.email}</p>
-        <p><strong>Cidade:</strong> ${contato.cidade}</p>
-        <p><strong>Endereço:</strong> ${contato.endereco}</p>
-      </div>
-    </div>
-  `
+  // Imagem
+  const img = document.createElement("img")
+  img.src = contato.foto
+  img.alt = `Foto de ${contato.nome}`
 
-  article.querySelector(".edit").addEventListener("click", () => fillForm(contato))
-  article.querySelector(".delete").addEventListener("click", async () => {
-    const confirmDelete = window.confirm(`Deseja realmente excluir ${contato.nome}?`)
+  // Container info
+  const contactInfo = document.createElement("div")
+  contactInfo.className = "contact-info"
+
+  // Header
+  const cardHeader = document.createElement("div")
+  cardHeader.className = "card-header"
+  // Nome
+  const title = document.createElement("h3")
+  title.textContent = contato.nome
+
+  // Actions
+  const cardActions = document.createElement("div")
+  cardActions.className = "card-actions"
+
+  cardActions.style.display = "flex"
+  cardActions.style.gap = "16px"
+
+  // Botão editar
+  const editButton = document.createElement("button")
+  editButton.className = "edit"
+  editButton.type = "button"
+  editButton.textContent = "Editar"
+
+  // Botão excluir
+  const deleteButton = document.createElement("button")
+  deleteButton.className = "delete"
+  deleteButton.type = "button"
+  deleteButton.textContent = "Excluir"
+
+  cardActions.appendChild(editButton)
+  cardActions.appendChild(deleteButton)
+
+  cardHeader.appendChild(title)
+  cardHeader.appendChild(cardActions)
+
+  // Details
+  const contactDetails = document.createElement("div")
+  contactDetails.className = "contact-details"
+
+  function createInfo(label, value) {
+    const p = document.createElement("p")
+
+    const strong = document.createElement("strong")
+    strong.textContent = `${label}: `
+
+    p.appendChild(strong)
+    p.append(value)
+
+    return p
+  }
+
+  contactDetails.appendChild(createInfo("Telefone", contato.celular))
+  contactDetails.appendChild(createInfo("E-mail", contato.email))
+  contactDetails.appendChild(createInfo("Cidade", contato.cidade))
+  contactDetails.appendChild(createInfo("Endereço", contato.endereco))
+
+  // Montagem
+  contactInfo.appendChild(cardHeader)
+  contactInfo.appendChild(contactDetails)
+
+  article.appendChild(img)
+  article.appendChild(contactInfo)
+
+  // Eventos
+  editButton.addEventListener("click", () => fillForm(contato))
+
+  deleteButton.addEventListener("click", async () => {
+    const confirmDelete = window.confirm(
+      `Deseja realmente excluir ${contato.nome}?`
+    )
 
     if (!confirmDelete) {
       return
@@ -252,14 +300,19 @@ function createContactCard(contato) {
     try {
       setStatus("Excluindo contato...", "")
       await deletarContato(contato.id)
+
       setStatus("Contato excluido com sucesso.", "success")
+
       await loadContacts()
 
       if (contactIdInput.value === String(contato.id)) {
         resetForm()
       }
     } catch (error) {
-      setStatus(error.message || "Nao foi possivel excluir o contato.", "error")
+      setStatus(
+        error.message || "Nao foi possivel excluir o contato.",
+        "error"
+      )
     }
   })
 
@@ -398,3 +451,105 @@ uploadWrapper.addEventListener("drop", (event) => {
 
 resetForm()
 loadContacts()
+// Ouvinte para filtrar a lista em tempo real
+contactListSearch.addEventListener("input", renderContacts)
+
+/**
+ * Tela de login
+ */
+function showLoginScreen() {
+  const appContainer = document.querySelector('.app')
+  const pageTitle = document.querySelector('.hero h1').textContent
+  appContainer.classList.add('hidden')
+
+  const loginOverlay = document.createElement('div')
+  loginOverlay.id = 'login-overlay'
+
+  // Painel
+  const panel = document.createElement('div')
+  panel.className = 'panel login-panel'
+
+  // Header
+  const panelHeader = document.createElement('div')
+  panelHeader.className = 'panel-header login-header'
+
+  // Título
+  const title = document.createElement('h2')
+  title.className = 'login-title'
+  title.textContent = pageTitle
+
+  panelHeader.appendChild(title)
+
+  // Form
+  const form = document.createElement('form')
+  form.id = 'login-form'
+  form.className = 'contact-form'
+
+  // Label email
+  const emailLabel = document.createElement('label')
+  emailLabel.textContent = 'E-mail '
+
+  const emailInput = document.createElement('input')
+  emailInput.type = 'email'
+  emailInput.id = 'login-email'
+  emailInput.required = true
+  emailInput.placeholder = 'usuario@email.com'
+
+  emailLabel.appendChild(emailInput)
+
+  // Label senha
+  const passwordLabel = document.createElement('label')
+  passwordLabel.textContent = 'Digite sua senha '
+
+  const passwordInput = document.createElement('input')
+  passwordInput.type = 'password'
+  passwordInput.id = 'login-password'
+  passwordInput.required = true
+  passwordInput.placeholder = '••••••'
+
+  passwordLabel.appendChild(passwordInput)
+
+  // Actions
+  const formActions = document.createElement('div')
+  formActions.className = 'form-actions'
+
+  // Botão
+  const submitButton = document.createElement('button')
+  submitButton.type = 'submit'
+  submitButton.className = 'primary-button'
+  submitButton.textContent = 'Entrar'
+
+  formActions.appendChild(submitButton)
+
+  const newUserRegistration = document.createElement('p')
+  newUserRegistration.className = 'login-footer-text'
+  newUserRegistration.innerHTML = 'Novo por aqui? <a href="#">Cadastre-se</a>'
+
+  formActions.appendChild(newUserRegistration)  
+
+  // Montagem
+  form.appendChild(emailLabel)
+  form.appendChild(passwordLabel)
+  form.appendChild(formActions)
+
+  panel.appendChild(panelHeader)
+  panel.appendChild(form)
+
+  loginOverlay.appendChild(panel)
+
+  document.body.appendChild(loginOverlay)
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    loginOverlay.remove()
+    appContainer.classList.remove('hidden')
+
+    resetForm()
+    loadContacts()
+  })
+}
+
+showLoginScreen()
+
+logoutButton.addEventListener('click', showLoginScreen)
